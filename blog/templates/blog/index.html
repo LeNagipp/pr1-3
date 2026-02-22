@@ -1,0 +1,71 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Головна - Мій блог</title>
+
+    <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">📝 Мій Блог</h1>
+            <nav class="nav">
+                <a href="{% url 'blog:index' %}">Головна</a>
+                <a href="{% url 'blog:category' 'python' %}">Python</a>
+                <a href="{% url 'blog:category' 'web' %}">Web</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <h1>Всі пости блогу</h1>
+
+            <p class="post-meta">Всього постів: {{ posts|length }}</p>
+
+            {% for post in posts %}
+                <div class="post-card">
+                    <h2>
+                        <a href="{% url 'blog:post_detail' post.id %}">
+                            {{ post.title }}
+                        </a>
+                    </h2>
+
+                    <div class="post-meta">
+                        <span>👤 {{ post.author|title }}</span>
+
+                        <span>📁 <a href="{% url 'blog:category' post.category %}">{{ post.category|upper }}</a></span>
+
+                        <span>📅 {{ post.date }}</span>
+                    </div>
+
+                    <p class="post-content">
+                        {{ post.content|truncatewords:30 }}
+                    </p>
+
+                    <a href="{% url 'blog:post_detail' post.id %}" class="read-more">
+                        Читати далі →
+                    </a>
+                </div>
+
+            {% empty %}
+                <div class="post-card">
+                    <p>Постів поки що немає. Додайте перший!</p>
+                </div>
+
+            {% endfor %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Мій Блог. Всі права захищені.</p>
+            <p>Створено на Django ❤️</p>
+        </div>
+    </footer>
+</body>
+</html>

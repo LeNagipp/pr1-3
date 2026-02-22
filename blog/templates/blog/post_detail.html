@@ -1,0 +1,79 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ post.title }} - Мій блог</title>
+
+    <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">📝 Мій Блог</h1>
+            <nav class="nav">
+                <a href="{% url 'blog:index' %}">Головна</a>
+                <a href="{% url 'blog:category' 'python' %}">Python</a>
+                <a href="{% url 'blog:category' 'web' %}">Web</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="post-card">
+                <h1>{{ post.title }}</h1>
+
+                <div class="post-meta">
+                    <span>👤 Автор: {{ post.author|title }}</span>
+
+                    <span>📁 Категорія: <a href="{% url 'blog:category' post.category %}">{{ post.category|upper }}</a></span>
+
+                    <span>📅 Дата: {{ post.date }}</span>
+                </div>
+
+                <div class="post-content">
+                    <p>{{ post.content }}</p>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2>Коментарі ({{ comments|length }})</h2>
+
+                {% for comment in comments %}
+                    <div class="comment">
+                        <strong>{{ comment.author }}</strong> написав:
+
+                        <p>{{ comment.text }}</p>
+                    </div>
+
+                {% empty %}
+                    <p>Коментарів поки що немає. Будьте першим!</p>
+                {% endfor %}
+
+                <h3>Додати коментар</h3>
+
+                <form method="POST" action="{% url 'blog:post_detail' post.id %}">
+                    {% csrf_token %}
+
+                    <input type="text" name="author" placeholder="Ваше ім'я" required>
+                    <textarea name="text" rows="4" placeholder="Ваш коментар" required></textarea>
+                    <button type="submit">Додати коментар</button>
+                </form>
+            </div>
+
+            <a href="{% url 'blog:index' %}" class="read-more">← Назад до списку</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Мій Блог. Всі права захищені.</p>
+            <p>Створено на Django ❤️</p>
+        </div>
+    </footer>
+</body>
+</html>
